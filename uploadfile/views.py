@@ -66,6 +66,12 @@ class FileUploadViewSet(ModelViewSet):
         return Response(status=status.HTTP_201_CREATED)
     
     def delete(self, request, name, format=None):
-        upload = FileUpload.by_name(name)
-        upload.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        if name is not None:
+            upload = FileUpload.by_name(name)
+            if upload is not None:
+                upload.delete()
+                return Response(status=status.HTTP_204_NO_CONTENT)
+            else:
+                HttpResponse("No file with name found %s" %name)
+        else:
+            HttpResponse("File name should not be None")
